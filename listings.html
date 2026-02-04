@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kenya Rentals - Available Houses</title>
+
+  <style>
+    /* Body */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #e0f7ff;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #0077cc, #00bfff);
+      color: white;
+      text-align: center;
+      padding: 30px 0;
+      font-size: 2rem;
+      font-weight: bold;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+      letter-spacing: 1px;
+    }
+
+    /* Listings container */
+    #listings {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 25px;
+      padding: 25px;
+    }
+
+    /* Card */
+    .card {
+      background: linear-gradient(145deg, #ffffff, #e6f2ff);
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      width: 100%;
+      max-width: 350px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+    }
+
+    /* Card Image */
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 15px;
+      margin-bottom: 15px;
+      transition: transform 0.3s ease;
+    }
+
+    .card img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Card content */
+    .card h3 {
+      margin: 0 0 10px 0;
+      color: #0077cc;
+      font-size: 1.3rem;
+      text-align: center;
+    }
+
+    .card p {
+      margin: 5px 0;
+      font-size: 1rem;
+      color: #333;
+      text-align: center;
+    }
+
+    /* Call / Payment Button */
+    .call-btn {
+      display: inline-block;
+      padding: 12px 18px;
+      background: #00bfff;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(0,191,255,0.3);
+      transition: background 0.3s, transform 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .call-btn:hover {
+      background: #0077cc;
+      transform: scale(1.05);
+    }
+
+    /* Responsive layout */
+    @media (min-width: 600px) {
+      .card {
+        width: calc(50% - 25px);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .card {
+        width: calc(33.33% - 25px);
+      }
+    }
+
+    /* Payment Modal */
+    #paymentModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    #paymentModal .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+    }
+
+    #paymentModal h2 {
+      color: #0077cc;
+      margin-top: 0;
+    }
+
+    #paymentModal p {
+      color: #333;
+      white-space: pre-line;
+    }
+
+    #paymentModal button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      border: none;
+      background: #0077cc;
+      color: white;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+
+<header>
+  Available Houses - Kenya Rentals
+</header>
+
+<div id="listings">
+  <!-- Cards will appear here -->
+</div>
+
+<!-- Payment Modal -->
+<div id="paymentModal">
+  <div class="modal-content">
+    <h2>Get Landlord Contact</h2>
+    <p id="modalText"></p>
+    <button onclick="closeModal()">Close</button>
+  </div>
+</div>
+
+<script>
+  // Replace with your OpenSheet link
+  const sheetLink = "https://opensheet.elk.sh/1QpctxzGMhbsX75HLgBzklX6H5OqUQa2Nxnh_6RMtU10/Sheet1";
+
+  fetch(sheetLink)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.getElementById("listings");
+      data.reverse().forEach(item => {
+        // Show only approved listings
+        if (item["Approved"] !== "yes") return;
+
+        // Photo fallback
+        const imageUrl = item["Photo"] && item["Photo"].trim() !== "" ? item["Photo"] : "placeholder.jpg";
+
+        container.innerHTML += `
+          <div class="card">
+            <img src="${imageUrl}" alt="${item["House type"]} - ${item["Location"]}">
+            <h3>${item["House type"]} - ${item["Location"]}</h3>
+            <p><strong>Rent:</strong> Ksh ${item["Rent"]}</p>
+            <button class="call-btn" onclick="showPayment('${item["Contact phone"]}')">Get Landlord Contact</button>
+          </div>
+        `;
+      });
+    })
+    .catch(err => {
+      const container = document.getElementById("listings");
+      container.innerHTML = "<p style='color:red; text-align:center;'>Error loading listings. Check your OpenSheet link.</p>";
+      console.error(err);
+    });
+
+  // Payment Modal Functions
+  function showPayment(phone) {
+    const modal = document.getElementById("paymentModal");
+    const text = document.getElementById("modalText");
+
+    // Your real M-Pesa & WhatsApp numbers
+    const mpesa = "0700391112";
+    const whatsapp = "0700391112";
+
+    text.textContent =
+      "To get the landlord contact:\n\n" +
+      "1️⃣ Send Ksh 50 via M-Pesa to " + mpesa + "\n" +
+      "2️⃣ Send the payment screenshot to WhatsApp: " + whatsapp + "\n\n" +
+      "After confirming payment, you will receive the landlord's number:\n\n" +
+      phone;
+
+    modal.style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("paymentModal").style.display = "none";
+  }
+</script>
+
+</body>
+</html>
