@@ -1,0 +1,107 @@
+/* ===== Body & Background ===== */
+body {
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #e0f7ff; /* light blue background */
+}
+
+/* ===== Header ===== */
+header {
+  background: linear-gradient(135deg, #0077cc, #00bfff); /* cool blue gradient */
+  color: white;
+  text-align: center;
+  padding: 25px 0;
+  font-size: 2rem;
+  font-weight: bold;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  letter-spacing: 1px;
+}
+
+/* ===== Listings Container ===== */
+#listings {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 25px;
+}
+
+/* ===== Card Styling ===== */
+.card {
+  background: linear-gradient(145deg, #ffffff, #e6f2ff); /* subtle gradient */
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover Effect for Cards */
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+}
+
+/* Card Image */
+.card img {
+  width: 100%;
+  border-radius: 15px;
+  object-fit: cover;
+  height: 200px;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.card img:hover {
+  transform: scale(1.05);
+}
+
+/* Card Text */
+.card h3 {
+  margin: 0 0 10px 0;
+  color: #0077cc;
+  font-size: 1.3rem;
+}
+
+.card p {
+  margin: 5px 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Call Now Button */
+.call-btn {
+  display: inline-block;
+  padding: 12px 18px;
+  background: #00bfff;
+  color: white;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: bold;
+  margin-top: 10px;
+  box-shadow: 0 4px 12px rgba(0,191,255,0.3);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.call-btn:hover {
+  background: #0077cc;
+  transform: scale(1.05);
+}
+
+/* ===== Responsive Layout ===== */
+@media (min-width: 600px) {
+  #listings {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .card {
+    width: calc(50% - 25px);
+  }
+}
+
+@media (min-width: 900px) {
+  .card {
+    width: calc(33.33% - 25px);
+  }
+}
